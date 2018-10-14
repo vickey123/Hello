@@ -1,0 +1,14 @@
+---
+- name: List all the hosts by the REGION "{{ region_name  }}" name and the STATE "{{ state_name }}" mode
+  hosts: localhost
+  vars:
+    region_name: "us-east-2"
+    state_name: "running"
+  tasks:
+  - command: aws ec2 describe-instances --region "{{ region_name }}" --filter "Name=instance-state-name,Values="{{ state_name }}"" --query "Reservations[*].Instances[*][NetworkInterfaces[0].PrivateIpAddresses[0].PrivateIpAddress]" --output text
+    register: all_hosts
+
+  - debug: 
+      #msg: "{{ all_hosts }}"
+      msg: "{{ all_hosts.stdout_lines }}"
+      
